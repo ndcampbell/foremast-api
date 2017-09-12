@@ -20,7 +20,7 @@ def create_app(appname, project, repo, email):
     short = group + "/" + repo
     app_configs = setup_configs(short)
     spinnakerapp = foremast.app.SpinnakerApp(app=appname, email=email, project=group, repo=repo,
-  				    pipeline_config=app_configs['pipeline'])
+ 				    pipeline_config=app_configs['pipeline'])
     spinnakerapp.create_app()
 
 if __name__ == '__main__':

@@ -29,4 +29,4 @@ def get_results(job_key):
         return "Nay!", 202
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True, host='0.0.0.0')
