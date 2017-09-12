@@ -8,6 +8,10 @@ app = Flask(__name__)
 q = Queue(connection=conn)
 
 
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"up": True}), 200
+
 @app.route('/app', methods=['POST'])
 def create_app():
     content = request.json
@@ -17,7 +21,6 @@ def create_app():
 
 @app.route("/results/<job_key>", methods=['GET'])
 def get_results(job_key):
-
     job = Job.fetch(job_key, connection=conn)
 
     if job.is_finished:
