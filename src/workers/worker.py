@@ -3,7 +3,7 @@ import os
 import redis
 from rq import Worker, Queue, Connection
 
-from foremast import app, configs
+import foremast
 
 listen = ['default']
 
@@ -16,11 +16,10 @@ def setup_configs(git_short):
     return app_configs
 
 
-def create_app(appname, email, group, repo):
+def create_app(appname, project, repo, email):
     short = group + "/" + repo
     app_configs = setup_configs(short)
-    print(app_configs)
-    spinnakerapp = app.SpinnakerApp(app=appname, email=email, project=group, repo=repo,
+    spinnakerapp = foremast.app.SpinnakerApp(app=appname, email=email, project=group, repo=repo,
   				    pipeline_config=app_configs['pipeline'])
     spinnakerapp.create_app()
 
