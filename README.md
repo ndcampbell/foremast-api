@@ -12,4 +12,10 @@ already has a dependency on Redis and I would like to not introduce any more inf
 
 Will use RQ: http://python-rq.org/
 
+## Running
+
+Uses docker-compose to run the API and Redis containers (need to add worker logic still)
+
+
+`docker-compose up`
 

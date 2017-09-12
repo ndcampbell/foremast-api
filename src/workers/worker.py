@@ -7,7 +7,7 @@ import foremast
 
 listen = ['default']
 
-redis_url = os.getenv('REDIS_URL', 'redis://localhost:32768')
+redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
 
 conn = redis.from_url(redis_url)
 
