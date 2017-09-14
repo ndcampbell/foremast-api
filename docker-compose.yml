@@ -6,11 +6,15 @@ services:
      - "5000:5000"
     volumes:
      - .:/app
+    depends_on:
+      - "redis"
   worker:
     build:
       context: .
       dockerfile: Dockerfile-worker
     volumes:
      - .:/app
+    depends_on:
+      - "redis"
   redis:
     image: "redis:alpine"

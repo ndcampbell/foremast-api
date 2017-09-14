@@ -1,3 +1,6 @@
+import logging
+logging.getLogger().setLevel(logging.INFO)
+
 from flask import Flask, request, jsonify
 from rq import Queue
 from rq.job import Job
@@ -6,7 +9,6 @@ from workers.worker import conn, create_app
 
 app = Flask(__name__)
 q = Queue(connection=conn)
-
 
 @app.route('/health', methods=['GET'])
 def health():
@@ -24,9 +26,12 @@ def get_results(job_key):
     job = Job.fetch(job_key, connection=conn)
 
     if job.is_finished:
-        return str(job.result), 200
+        if job.result:
+            return str(job.result), 200
+        else:
+            return "job failed", 400
     else:
-        return "Nay!", 202
+        return "Job still running", 202
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
