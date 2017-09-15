@@ -21,7 +21,7 @@ def health():
 @app.route('/runner/<action>', methods=['POST'])
 def runner(action):
     """Runs Foremast Runner against posted resources"""
-    job = q.enqueue_call(func=run_runner, args=[action], kwargs=request.json)
+    job = q.enqueue_call(func=run_runner, args=[action], kwargs=request.json, timeout=600)
     return jsonify({"task_id": job.get_id()})
 
 @app.route("/results/<job_key>", methods=['GET'])
@@ -30,9 +30,9 @@ def get_results(job_key):
     job = Job.fetch(job_key, connection=conn)
 
     if job.is_finished:
-        return str(job.result), 200
+        return jsonify({"result": "success", "return": job.result}), 200
     elif job.is_failed:
-        return str("failed"), 400
+        return jsonify({"result": "failed", "exception": job.exc_info}), 400
     else:
         return "Job still running", 202
 
