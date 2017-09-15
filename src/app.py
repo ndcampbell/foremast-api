@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 from rq import Queue
 from rq.job import Job
 
-from workers.worker import conn, create_app
+from worker import conn, run_runner
 
 app = Flask(__name__)
 q = Queue(connection=conn)
@@ -17,7 +17,7 @@ def health():
 @app.route('/app', methods=['POST'])
 def create_app():
     content = request.json
-    job = q.enqueue_call(func=create_app, args=(content['app_name'], content['project'], content['repo'], content['owner_email']))
+    job = q.enqueue_call(func=run_runner, kwargs={"group": content['group'], "repo": content['repo'], "email": content['owner_email']})
     return jsonify({"task_id": job.get_id()})
 
 
