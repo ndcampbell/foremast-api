@@ -18,7 +18,11 @@ conn = redis.from_url(redis_url)
 def run_runner(**kwargs):
     runner = runner_api.RunnerApi(**kwargs)
     runner.write_configs()
-    runner.create_app()
+    for resource in kwargs.get("resources"):
+        create_resource = "create_" + resource
+        runner_func = getattr(runner, create_resource)
+        runner_func()
+    runner.cleanup()
     return("Runner Complete")
 
 if __name__ == '__main__':

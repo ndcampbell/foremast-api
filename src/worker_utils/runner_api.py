@@ -5,10 +5,15 @@ import gogoutils
 class RunnerApi(ForemastRunner):
     def __init__(self, **kwargs):
         """Setup the Runner for all Foremast modules."""
-        self.email = kwargs.get('email')
+        self.email = kwargs.get('owner_email')
         self.group = kwargs.get('group')
         self.repo = kwargs.get("repo")
         self.runway_dir = kwargs.get("runway_dir")
+        self.env = kwargs.get("env")
+        self.region = kwargs.get("region")
+        self.artifact_path = kwargs.get("artifacts_path")
+        self.artifact_version = kwargs.get("artifact_version")
+        self.promote_stage = kwargs.get("promote_stage", "latest")
 
         self.git_project = "{}/{}".format(self.group, self.repo)
         parsed = gogoutils.Parser(self.git_project)
