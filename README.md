@@ -12,6 +12,12 @@ already has a dependency on Redis and I would like to not introduce any more inf
 
 Will use RQ: http://python-rq.org/
 
+## Foremast Configuration
+
+Put all Foremast Extras (templates, certificats, etc) in a `foremast_extras` directory in the root level of the project
+
+Put the Foremast `config.py` in the root level, looking at `foremast_extras/` for anything path based.
+
 ## Running
 
 Uses docker-compose to run the API and Redis containers (need to add worker logic still)
@@ -20,10 +26,10 @@ Uses docker-compose to run the API and Redis containers (need to add worker logi
 
 ## API
 
-### POST /runner
+### POST /runner/<action>
 Data: `{"group": "forrest", "repo": "edge", "owner_email": "d@example.com", "resources": ["app", "pipeline"]}`
 
-`"resources"` is a list of resources for Foremast to create. Foremast will create these resources in the order provided
+`"resources"` is a list of resources for Foremast to create. Foremast will run `<action>` on these resources in the order provided.
 
 Return: `{"task_id": $taskID}`
 
