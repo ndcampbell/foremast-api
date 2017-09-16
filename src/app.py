@@ -1,14 +1,14 @@
 import logging
-logging.getLogger().setLevel(logging.INFO)
 
 from flask import Flask, request, jsonify
 import redis
 from rq import Queue
 from rq.job import Job
 
-from consts import redis_url
+from consts import redis_url, logging_level
 from worker import run_runner
 
+logging.getLogger().setLevel(logging_level)
 app = Flask(__name__)
 conn = redis.from_url(redis_url)
 q = Queue(connection=conn)

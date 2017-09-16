@@ -5,11 +5,11 @@ from io import StringIO as StringBuffer
 import redis
 from rq import Worker, Queue, Connection
 
-from consts import redis_url
+from consts import redis_url, logging_level
 import runner_api
 
 
-logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().setLevel(logging_level)
 
 
 def capture_logs():
@@ -17,7 +17,9 @@ def capture_logs():
     logger = logging.getLogger("foremast")
     log_capture_string = StringBuffer()
     ch = logging.StreamHandler(log_capture_string)
-    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    ch.setLevel(logging_level)
     logger.addHandler(ch)
     return log_capture_string
 
