@@ -2,7 +2,7 @@ import logging
 
 from flask import Flask, request, jsonify
 import redis
-from rq import Queue
+from rq import Queue, get_failed_queue
 from rq.job import Job
 
 from consts import redis_url, logging_level
@@ -24,7 +24,7 @@ def runner(action):
     job = q.enqueue_call(func=run_runner, args=[action], kwargs=request.json, timeout=600)
     return jsonify({"task_id": job.get_id()})
 
-@app.route("/results/<job_key>", methods=['GET'])
+@app.route("/runner/results/<job_key>", methods=['GET'])
 def get_results(job_key):
     """Gets results of task with task ID"""
     job = Job.fetch(job_key, connection=conn)
@@ -35,6 +35,15 @@ def get_results(job_key):
         return str(job.exc_info), 400
     else:
         return "Job still running", 202
+
+@app.route("/runner/jobs", methods=['GET'])
+def get_all_jobs():
+    """Returns list of failed_jobs and list of queued_jobs"""
+    fq = get_failed_queue(connection=conn)
+    job_data = {'queued_jobs': q.job_ids,
+                'failed_jobs': fq.job_ids}
+    return jsonify(job_data), 200
+    
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

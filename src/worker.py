@@ -25,16 +25,25 @@ def capture_logs():
 
 def run_runner(action, **kwargs):
     log_capture_string = capture_logs()    
-    runner = runner_api.RunnerApi(**kwargs)
-    runner.write_configs()
-    for resource in kwargs.get("resources"):
-        func_name = "{}_{}".format(action, resource)
-        runner_func = getattr(runner, func_name)
-        runner_func()
-    runner.cleanup()
+    try:
+        runner = runner_api.RunnerApi(**kwargs)
+        runner.write_configs()
+        for resource in kwargs.get("resources"):
+            func_name = "{}_{}".format(action, resource)
+            runner_func = getattr(runner, func_name)
+            runner_func()
+        runner.cleanup()
+    except:
+        log_contents = log_capture_string.getvalue()
+        log_capture_string.close()
+        raise ForemastException(log_contents)
     log_contents = log_capture_string.getvalue()
     log_capture_string.close()
     return(log_contents)
+
+class ForemastException(Exception):
+    def __init__(self, tb):
+        Exception.__init__(self, tb)
 
 if __name__ == '__main__':
     conn = redis.from_url(redis_url)

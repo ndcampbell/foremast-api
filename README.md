@@ -20,7 +20,7 @@ Put the Foremast `config.py` in the root level, looking at `foremast_extras/` fo
 
 ## Running
 
-Uses docker-compose to run the API and Redis containers (need to add worker logic still)
+Uses docker-compose to run the API, Worker, and Redis containers
 
 `docker-compose up`
 
@@ -33,13 +33,16 @@ Data: `{"group": "forrest", "repo": "edge", "owner_email": "d@example.com", "res
 
 Return: `{"task_id": $taskID}`
 
-### GET /results/$taskID
+### GET /runner/results/$taskID
 
-Return: Status of the task
+Return: Status or results of the task.
+
+### GET /runner/jobs
+
+Return: A list of failed_jobs and queued_jobs
 
 ## To Do:
 
 - Swagger for API
-- Handle logging better (send Foremast logs as return of task)
 - Error handling
 - Parameter checking for posted data
