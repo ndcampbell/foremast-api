@@ -31,11 +31,14 @@ def get_results(job_key):
     job = Job.fetch(job_key, connection=conn)
 
     if job.is_finished:
-        return str(job.result), 200
+        finished = {"status": "success", "logs": job.result}
+        return jsonify(finished), 200
     elif job.is_failed:
-        return str(job.exc_info), 400
+        finished = {"status": "terminal", "logs": job.exc_info}
+        return jsonify(finished), 400
     else:
-        return "Job still running", 202
+        running = {"status": "running", "logs": ""}
+        return jsonify(running), 202
 
 @app.route("/runner/jobs", methods=['GET'])
 def get_all_jobs():
