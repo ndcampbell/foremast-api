@@ -24,7 +24,8 @@ def capture_logs():
     return log_capture_string
 
 def run_runner(action, **kwargs):
-    log_capture_string = capture_logs()    
+    """Runs the Foremast Runner, captures logs as stringbuffer"""
+    log_capture_string = capture_logs()
     try:
         runner = runner_api.RunnerApi(**kwargs)
         runner.write_configs()

@@ -22,7 +22,8 @@ def health():
 def runner(action):
     """Runs Foremast Runner against posted resources"""
     job = q.enqueue_call(func=run_runner, args=[action], kwargs=request.json, timeout=600)
-    return jsonify({"task_id": job.get_id()})
+    results_url = "{}runner/results/{}".format(request.url_root, job.get_id())
+    return jsonify({"task_id": job.get_id(), "results_url": results_url})
 
 @app.route("/runner/results/<job_key>", methods=['GET'])
 def get_results(job_key):
@@ -43,7 +44,6 @@ def get_all_jobs():
     job_data = {'queued_jobs': q.job_ids,
                 'failed_jobs': fq.job_ids}
     return jsonify(job_data), 200
-    
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
