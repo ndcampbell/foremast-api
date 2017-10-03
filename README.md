@@ -31,11 +31,17 @@ Data: `{"group": "forrest", "repo": "edge", "owner_email": "d@example.com", "res
 
 `"resources"` is a list of resources for Foremast to create. Foremast will run `<action>` on these resources in the order provided.
 
-Return: `{"task_id": $taskID}`
+Return: `{"task_id": "5f52dca4-ded2-4d8e-8519-9dbdbb8c64c1", "status_url": "http://localhost:5000/runner/logs/5f52dca4-ded2-4d8e-8519-9dbdbb8c64c1"}`
 
-### GET /runner/results/$taskID
+### GET /runner/status/$taskID
 
-Return: Status or results of the task.
+Return: Status of the task and URL to logs
+
+Possible status: `success`, `terminal`, `running`
+
+### GET /runner/logs/$taskID
+
+Return: Text of logs from the task
 
 ### GET /runner/jobs
 

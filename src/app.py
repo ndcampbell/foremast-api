@@ -36,11 +36,9 @@ def get_status(job_key):
     if job.is_finished:
         status_dict['status'] = "success"
         return_code = 200
-        #finished = {"status": "complete", "logs": job.result}
     elif job.is_failed:
         status_dict['status'] = "terminal"
         return_code = 400
-        #finished = {"status": "failure", "logs": job.exec_info}
     else:
         status_dict['status'] = "running"
         status_dict['logs_url'] = ""
