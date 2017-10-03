@@ -22,23 +22,43 @@ def health():
 def runner(action):
     """Runs Foremast Runner against posted resources"""
     job = q.enqueue_call(func=run_runner, args=[action], kwargs=request.json, timeout=600)
-    results_url = "{}runner/results/{}".format(request.url_root, job.get_id())
-    return jsonify({"task_id": job.get_id(), "results_url": results_url})
+    status_url = "{}runner/status/{}".format(request.url_root, job.get_id())
+    return jsonify({"task_id": job.get_id(), "status_url": status_url})
 
-@app.route("/runner/results/<job_key>", methods=['GET'])
-def get_results(job_key):
+@app.route("/runner/status/<job_key>", methods=['GET'])
+def get_status(job_key):
     """Gets results of task with task ID"""
     job = Job.fetch(job_key, connection=conn)
 
+    logs_url = "{}runner/logs/{}".format(request.url_root, job_key)
+    status_dict = {"status": "", "logs_url": logs_url}
+    return_code = 200
     if job.is_finished:
-        finished = {"status": "success", "logs": job.result}
-        return jsonify(finished), 200
+        status_dict['status'] = "success"
+        return_code = 200
+        #finished = {"status": "complete", "logs": job.result}
     elif job.is_failed:
-        finished = {"status": "terminal", "logs": job.exc_info}
-        return jsonify(finished), 400
+        status_dict['status'] = "terminal"
+        return_code = 400
+        #finished = {"status": "failure", "logs": job.exec_info}
     else:
-        running = {"status": "running", "logs": ""}
-        return jsonify(running), 202
+        status_dict['status'] = "running"
+        status_dict['logs_url'] = ""
+        return_code = 202
+
+    return jsonify(status_dict), return_code
+
+@app.route("/runner/logs/<job_key>", methods=['GET'])
+def get_logs(job_key):
+    job = Job.fetch(job_key, connection=conn)
+    if job.is_finished:
+        logs = job.result
+    elif job.is_failed:
+        logs = job.exc_info
+    else:
+        logs = "Task is still running"
+    return str(logs), 200
+    
 
 @app.route("/runner/jobs", methods=['GET'])
 def get_all_jobs():
